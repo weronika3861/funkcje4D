@@ -2,6 +2,7 @@
 #include <fstream>
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <vector>
 
 class Point4D
 {

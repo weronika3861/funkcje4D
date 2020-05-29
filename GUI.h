@@ -65,9 +65,9 @@ class MyFrame1 : public wxFrame
 	public:
 		wxSlider* m_slider2;
 
-		MyFrame1( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Funkcje 4D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 704,429 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		MyFrame1( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Funkcje 4D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 740, 550 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
-		~MyFrame1();
+		virtual ~MyFrame1();
 
 };
 

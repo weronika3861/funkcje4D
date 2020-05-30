@@ -4,6 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iterator>
+#include <wx/log.h> 
 
 
 GUIMyFrame1::GUIMyFrame1( wxWindow* parent )
@@ -12,11 +13,11 @@ MyFrame1( parent )
 {
 	IsFileLoaded = false;
 	SliceImage.Create(m_panel->GetSize());
+	SliceImage.Clear(255);
 }
 
 void GUIMyFrame1::m_loadOnButtonClick( wxCommandEvent& event )
 {
-// TODO: Implement m_loadOnButtonClick
 	wxFileDialog WxOpenFileDialog(this, wxT("Choose a file"), wxT(""), wxT(""), wxT("Text file (*.txt)|*.txt"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if (WxOpenFileDialog.ShowModal() == wxID_OK)
@@ -48,17 +49,23 @@ void GUIMyFrame1::m_loadOnButtonClick( wxCommandEvent& event )
 			FunMax = *std::max_element(std::begin(FData), std::end(FData));
 
 			IsFileLoaded = true;
+			DrawSlice();
+			Repaint();
 	}
 }
 
 void GUIMyFrame1::m_saveOnButtonClick( wxCommandEvent& event )
 {
-// TODO: Implement m_saveOnButtonClick
+	std::unique_ptr<wxFileDialog> file_dialog(new wxFileDialog(this, _("Choose a file"), _(""), _(""), _("BMP files (*.BMP)|*.BMP"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT));
+
+	if (file_dialog->ShowModal() == wxID_OK) {
+		wxLogDebug(_("Selected File: ") + file_dialog->GetPath());
+		SliceImage.SaveFile(file_dialog->GetPath(), wxBITMAP_TYPE_BMP);
+	}
 }
 
 void GUIMyFrame1::m_slider2OnScroll( wxScrollEvent& event )
 {
-// TODO: Implement m_slider2OnScroll
 	SliceNumber = m_slider2->GetValue();
 	DrawSlice();
 	Repaint();
@@ -66,22 +73,23 @@ void GUIMyFrame1::m_slider2OnScroll( wxScrollEvent& event )
 
 void GUIMyFrame1::m_panelOnUpdateUI( wxUpdateUIEvent& event )
 {
-// TODO: Implement m_panelOnUpdateUI
 	DrawSlice();
 	Repaint();
 }
 
 void GUIMyFrame1::m_w1OnButtonClick( wxCommandEvent& event )
 {
-// TODO: Implement m_w1OnButtonClick
-	SliceVector = Vector3D(1, 0, 0);
+	//SliceVector = Vector3D(1, 0, 0);
+	XAxisArg = &YData;
+	YAxisArg = &ZData;
+	ZAxisArg = &XData;
+
 	DrawSlice();
 	Repaint();
 }
 
 void GUIMyFrame1::m_w2OnButtonClick( wxCommandEvent& event )
 {
-// TODO: Implement m_w2OnButtonClick
 	SliceVector = Vector3D(0, 1, 0);
 	DrawSlice();
 	Repaint();
@@ -89,7 +97,6 @@ void GUIMyFrame1::m_w2OnButtonClick( wxCommandEvent& event )
 
 void GUIMyFrame1::m_w3OnButtonClick( wxCommandEvent& event )
 {
-// TODO: Implement m_w3OnButtonClick
 	SliceVector = Vector3D(0, 0, 1);
 	DrawSlice();
 	Repaint();
@@ -97,7 +104,6 @@ void GUIMyFrame1::m_w3OnButtonClick( wxCommandEvent& event )
 
 void GUIMyFrame1::m_w4OnButtonClick( wxCommandEvent& event )
 {
-// TODO: Implement m_w4OnButtonClick
 	SliceVector = Vector3D(1, 1, 0);
 	DrawSlice();
 	Repaint();
@@ -105,7 +111,6 @@ void GUIMyFrame1::m_w4OnButtonClick( wxCommandEvent& event )
 
 void GUIMyFrame1::m_w5OnButtonClick( wxCommandEvent& event )
 {
-// TODO: Implement m_w5OnButtonClick
 	SliceVector = Vector3D(1, 0, 1);
 	DrawSlice();
 	Repaint();
@@ -113,7 +118,6 @@ void GUIMyFrame1::m_w5OnButtonClick( wxCommandEvent& event )
 
 void GUIMyFrame1::m_w6OnButtonClick( wxCommandEvent& event )
 {
-// TODO: Implement m_w6OnButtonClick
 	SliceVector = Vector3D(0, 1, 1);
 	DrawSlice();
 	Repaint();
@@ -132,62 +136,64 @@ void GUIMyFrame1::Repaint()
 
 void GUIMyFrame1::DrawSlice()
 {
-	if (IsFileLoaded == false)
-		return;
+	if (IsFileLoaded)
+	{
+		double arg_min = XData[0];
+		double z_axis_val = arg_min + SliceNumber / 100 * PointRange; //konwersja numeru przekroju (na sliderze) na wartoœæ któregoœ z argumentów
 
-	double arg_min = XData[0];
-	double z = arg_min + SliceNumber / 100 * PointRange; //konwersja numeru przekroju (na sliderze) na wartoœæ któregoœ z argumentów
+		int width = m_panel->GetSize().GetWidth();
+		int height = m_panel->GetSize().GetHeight();
+		int coord_range = std::min(width, height); //kwadratowy rozmiar wyswietlanego obrazu, dopasowany do rozmiaru okna
 
-	int width = m_panel->GetSize().GetWidth();
-	int height = m_panel->GetSize().GetHeight();
-	int coord_range = std::min(width, height); //kwadratowy rozmiar wyswietlanego obrazu, dopasowany do rozmiaru okna
-
-	unsigned char * rgb_data = (unsigned char*)malloc(coord_range * coord_range * 3); //tablica zawierajaca wartosci r, g, b dla kazdego piksela okna
-	for (int i = 0; i < coord_range; i++)
-		for (int j = 0; j < coord_range; j++)
-		{
-			//przeliczanie indeksow
-			int r_pos = i * coord_range * 3 + j * 3 + 0; 
-			int g_pos = i * coord_range * 3 + j * 3 + 1;
-			int b_pos = i * coord_range * 3 + j * 3 + 2;
-
-			//konwersja numeru piksela na wartosci argumentow na osiach
-			double x = arg_min + i / coord_range * PointRange; 
-			double y = arg_min + j / coord_range * PointRange;
-			
-			double f = ShepardMethod(x, y, z); //aproksymujemy wartosc funkcji
-
-			//do mapy kolorow
-			//int w = static_cast<int>((f - FunMin) / (FunMax - FunMin)) * 255;
-			//rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w; 
-
-			//to jest tylko testowe
-			if (SliceVector == Vector3D(1, 0, 0))
+		unsigned char * rgb_data = (unsigned char*)malloc(coord_range * coord_range * 3); //tablica zawierajaca wartosci r, g, b dla kazdego piksela okna
+		for (int i = 0; i < coord_range; i++)
+			for (int j = 0; j < coord_range; j++)
 			{
-				rgb_data[r_pos] = 255;
-				rgb_data[g_pos] = 0;
-				rgb_data[b_pos] = 0;
+				//przeliczanie indeksow
+				int r_pos = i * coord_range * 3 + j * 3 + 0;
+				int g_pos = i * coord_range * 3 + j * 3 + 1;
+				int b_pos = i * coord_range * 3 + j * 3 + 2;
+
+				//konwersja numeru piksela na wartosci argumentow na osiach
+				double x_axis_val = arg_min + i / (double)coord_range * PointRange;
+				double y_axis_val = arg_min + j / (double)coord_range * PointRange;
+				
+				double f = ShepardMethod(x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
+
+				//do mapy kolorow
+				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin)) * 255;
+				rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w; 
+
+				//to jest tylko testowe
+				if (SliceVector == Vector3D(1, 0, 0))
+				{
+					rgb_data[r_pos] = 255;
+					rgb_data[g_pos] = 0;
+					rgb_data[b_pos] = 0;
+				}
+				else if (SliceVector == Vector3D(0, 1, 0))
+				{
+					rgb_data[r_pos] = 0;
+					rgb_data[g_pos] = 255;
+					rgb_data[b_pos] = 0;
+				}
+				else if (SliceVector == Vector3D(0, 0, 1))
+				{
+					rgb_data[r_pos] = 0;
+					rgb_data[g_pos] = 0;
+					rgb_data[b_pos] = 255;
+				}
+				else
+				{
+					rgb_data[r_pos] = 255;
+					rgb_data[g_pos] = 255;
+					rgb_data[b_pos] = 255;
+				}
 			}
-			else if (SliceVector == Vector3D(0, 1, 0))
-			{
-				rgb_data[r_pos] = 0;
-				rgb_data[g_pos] = 255;
-				rgb_data[b_pos] = 0;
-			}
-			else if (SliceVector == Vector3D(0, 0, 1))
-			{
-				rgb_data[r_pos] = 0;
-				rgb_data[g_pos] = 0;
-				rgb_data[b_pos] = 255;
-			}
-			else
-			{
-				rgb_data[r_pos] = 255;
-				rgb_data[g_pos] = 255;
-				rgb_data[b_pos] = 255;
-			}
-		}
-	SliceImage = wxImage(coord_range, coord_range, rgb_data); //zapisuje obecny przekrój do SliceImage
+		SliceImage = wxImage(coord_range, coord_range, rgb_data); //zapisuje obecny przekrój do SliceImage
+
+	}
+
 }
 
 double GUIMyFrame1::ShepardMethod(double x, double y, double z)

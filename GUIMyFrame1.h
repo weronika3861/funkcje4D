@@ -46,6 +46,7 @@ class GUIMyFrame1 : public MyFrame1
 	double ShepardMethod(double, double, double); //aproksymacja wartosci funkcji metoda Sheparda
 	
 	std::vector<double> XData, YData, ZData, FData; //wektory przechowujace wartosci x, y, z, f (z pliku)
+	std::vector <double> * XAxisArg, * YAxisArg, * ZAxisArg;
 	double FunMax, FunMin; //max i min aktualnej fukcji 4D (czyli wektora FData)
 	double PointRange; //zakres argumentow x, y, z (max - min)
 	Vector3D SliceVector; //aktualny wektor przekroju

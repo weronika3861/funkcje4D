@@ -4,6 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iterator>
+#include <memory>
 #include <wx/log.h> 
 
 
@@ -40,7 +41,6 @@ void GUIMyFrame1::m_loadOnButtonClick( wxCommandEvent& event )
 				FData.push_back(f);
 			}
 			in.close();
-		}
 			double arg_min = XData[0];
 			double arg_max = XData[XData.size() - 1];
 			PointRange = arg_max - arg_min;
@@ -51,6 +51,7 @@ void GUIMyFrame1::m_loadOnButtonClick( wxCommandEvent& event )
 			IsFileLoaded = true;
 			DrawSlice();
 			Repaint();
+		}
 	}
 }
 

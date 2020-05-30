@@ -43,7 +43,7 @@ public:
 	//// end generated class members
 	void Repaint();
 	void DrawSlice(); //rysuje przekroj do SliceImage
-	double ShepardMethod(int, std::vector <double>&, std::vector <double>&, std::vector <double>&, double, double, double); //aproksymacja wartosci funkcji metoda Sheparda
+	double ShepardMethod(int, double, double, double); //aproksymacja wartosci funkcji metoda Sheparda
 
 	std::vector<double> XData, YData, ZData, FData; //wektory przechowujace wartosci x, y, z, f (z pliku)
 	std::vector <double>* XAxisArg, * YAxisArg, * ZAxisArg, *Farg;

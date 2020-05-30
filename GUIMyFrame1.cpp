@@ -134,11 +134,11 @@ void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::Repaint()
 {
+	wxBitmap bitmap(SliceImage);
 	wxClientDC dc_(m_panel);
 	wxBufferedDC dc(&dc_);
 	dc.SetBackground(*wxWHITE_BRUSH);
 	dc.Clear();
-	wxBitmap bitmap(SliceImage);
 	dc.DrawBitmap(bitmap, 0, 0); //rysowanie na ekranie aktualnego przekroju
 }
 
@@ -170,9 +170,7 @@ void GUIMyFrame1::DrawSlice()
 
 				double f = ShepardMethod(N, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
 				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin) * 255);
-				rgb_data[r_pos] = w;
-				rgb_data[g_pos] = w;
-				rgb_data[b_pos] = w;
+				rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
 			}
 		SliceImage = wxImage(coord_range, coord_range, rgb_data); //zapisuje obecny przekrój do SliceImage
 	}

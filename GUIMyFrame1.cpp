@@ -6,6 +6,8 @@
 #include <iterator>
 #include <memory>
 #include <wx/log.h> 
+#include <cstdlib>
+#include <ctime>
 
 
 GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
@@ -15,6 +17,7 @@ GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
 	IsFileLoaded = false;
 	SliceImage.Create(m_panel->GetSize());
 	SliceImage.Clear(255);
+	srand(time(NULL));
 }
 
 void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
@@ -74,7 +77,6 @@ void GUIMyFrame1::m_slider2OnScroll(wxScrollEvent& event)
 
 void GUIMyFrame1::m_panelOnUpdateUI(wxUpdateUIEvent& event)
 {
-	DrawSlice();
 	Repaint();
 }
 
@@ -134,6 +136,10 @@ void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::Repaint()
 {
+	int min_size = std::min(m_panel->GetSize().GetWidth(), m_panel->GetSize().GetHeight());
+	wxSize panel_square_size(min_size, min_size);
+	if (SliceImage.GetSize() != panel_square_size)
+		DrawSlice();
 	wxBitmap bitmap(SliceImage);
 	wxClientDC dc_(m_panel);
 	wxBufferedDC dc(&dc_);
@@ -170,6 +176,7 @@ void GUIMyFrame1::DrawSlice()
 
 				double f = ShepardMethod(N, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
 				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin) * 255);
+				//int w = rand() % 256;
 				rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
 			}
 		SliceImage = wxImage(coord_range, coord_range, rgb_data); //zapisuje obecny przekrój do SliceImage

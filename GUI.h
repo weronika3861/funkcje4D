@@ -62,10 +62,11 @@ class MyFrame1 : public wxFrame
 		virtual void m_w6OnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 
 
+
 	public:
 		wxSlider* m_slider2;
 
-		MyFrame1( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Funkcje 4D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 740, 550 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		MyFrame1( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Funkcje 4D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 740, 550 ), long style = wxDEFAULT_FRAME_STYLE |wxTAB_TRAVERSAL);
 
 		virtual ~MyFrame1();
 

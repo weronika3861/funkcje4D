@@ -8,16 +8,16 @@
 #include <wx/log.h> 
 
 
-GUIMyFrame1::GUIMyFrame1( wxWindow* parent )
-:
-MyFrame1( parent )
+GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
+	:
+	MyFrame1(parent)
 {
 	IsFileLoaded = false;
 	SliceImage.Create(m_panel->GetSize());
 	SliceImage.Clear(255);
 }
 
-void GUIMyFrame1::m_loadOnButtonClick( wxCommandEvent& event )
+void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 {
 	wxFileDialog WxOpenFileDialog(this, wxT("Choose a file"), wxT(""), wxT(""), wxT("Text file (*.txt)|*.txt"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
@@ -55,7 +55,7 @@ void GUIMyFrame1::m_loadOnButtonClick( wxCommandEvent& event )
 	}
 }
 
-void GUIMyFrame1::m_saveOnButtonClick( wxCommandEvent& event )
+void GUIMyFrame1::m_saveOnButtonClick(wxCommandEvent& event)
 {
 	std::unique_ptr<wxFileDialog> file_dialog(new wxFileDialog(this, _("Choose a file"), _(""), _(""), _("BMP files (*.BMP)|*.BMP"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT));
 
@@ -65,59 +65,60 @@ void GUIMyFrame1::m_saveOnButtonClick( wxCommandEvent& event )
 	}
 }
 
-void GUIMyFrame1::m_slider2OnScroll( wxScrollEvent& event )
+void GUIMyFrame1::m_slider2OnScroll(wxScrollEvent& event)
 {
 	SliceNumber = m_slider2->GetValue();
 	DrawSlice();
 	Repaint();
 }
 
-void GUIMyFrame1::m_panelOnUpdateUI( wxUpdateUIEvent& event )
+void GUIMyFrame1::m_panelOnUpdateUI(wxUpdateUIEvent& event)
 {
 	DrawSlice();
 	Repaint();
 }
 
-void GUIMyFrame1::m_w1OnButtonClick( wxCommandEvent& event )
+void GUIMyFrame1::m_w1OnButtonClick(wxCommandEvent& event)
 {
-	//SliceVector = Vector3D(1, 0, 0);
+	SliceVector = Vector3D(1, 0, 0);
 	XAxisArg = &YData;
 	YAxisArg = &ZData;
 	ZAxisArg = &XData;
+	Farg = &FData;
 
 	DrawSlice();
 	Repaint();
 }
 
-void GUIMyFrame1::m_w2OnButtonClick( wxCommandEvent& event )
+void GUIMyFrame1::m_w2OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(0, 1, 0);
 	DrawSlice();
 	Repaint();
 }
 
-void GUIMyFrame1::m_w3OnButtonClick( wxCommandEvent& event )
+void GUIMyFrame1::m_w3OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(0, 0, 1);
 	DrawSlice();
 	Repaint();
 }
 
-void GUIMyFrame1::m_w4OnButtonClick( wxCommandEvent& event )
+void GUIMyFrame1::m_w4OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(1, 1, 0);
 	DrawSlice();
 	Repaint();
 }
 
-void GUIMyFrame1::m_w5OnButtonClick( wxCommandEvent& event )
+void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(1, 0, 1);
 	DrawSlice();
 	Repaint();
 }
 
-void GUIMyFrame1::m_w6OnButtonClick( wxCommandEvent& event )
+void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(0, 1, 1);
 	DrawSlice();
@@ -129,9 +130,9 @@ void GUIMyFrame1::Repaint()
 {
 	wxClientDC dc_(m_panel);
 	wxBufferedDC dc(&dc_);
-    dc.SetBackground(*wxWHITE_BRUSH);
+	dc.SetBackground(*wxWHITE_BRUSH);
 	dc.Clear();
-	wxBitmap bitmap(SliceImage); 
+	wxBitmap bitmap(SliceImage);
 	dc.DrawBitmap(bitmap, 0, 0); //rysowanie na ekranie aktualnego przekroju
 }
 
@@ -146,7 +147,7 @@ void GUIMyFrame1::DrawSlice()
 		int height = m_panel->GetSize().GetHeight();
 		int coord_range = std::min(width, height); //kwadratowy rozmiar wyswietlanego obrazu, dopasowany do rozmiaru okna
 
-		unsigned char * rgb_data = (unsigned char*)malloc(coord_range * coord_range * 3); //tablica zawierajaca wartosci r, g, b dla kazdego piksela okna
+		unsigned char* rgb_data = (unsigned char*)malloc(coord_range * coord_range * 3); //tablica zawierajaca wartosci r, g, b dla kazdego piksela okna
 		for (int i = 0; i < coord_range; i++)
 			for (int j = 0; j < coord_range; j++)
 			{
@@ -158,25 +159,25 @@ void GUIMyFrame1::DrawSlice()
 				//konwersja numeru piksela na wartosci argumentow na osiach
 				double x_axis_val = arg_min + i / (double)coord_range * PointRange;
 				double y_axis_val = arg_min + j / (double)coord_range * PointRange;
-				
-				double f = ShepardMethod(x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
+
+				int N = XData.size();
 
 				//do mapy kolorow
-				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin)) * 255;
-				rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w; 
+				//int w = static_cast<int>((f - FunMin) / (FunMax - FunMin)) * 255;
+				//rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
 
 				//to jest tylko testowe
 				if (SliceVector == Vector3D(1, 0, 0))
 				{
-					rgb_data[r_pos] = 255;
-					rgb_data[g_pos] = 0;
-					rgb_data[b_pos] = 0;
+						double f = ShepardMethod(N, YData, ZData,FData, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
+						double w = (f - FunMin) / (FunMax - FunMin) * 255;
+						rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
 				}
 				else if (SliceVector == Vector3D(0, 1, 0))
 				{
-					rgb_data[r_pos] = 0;
-					rgb_data[g_pos] = 255;
-					rgb_data[b_pos] = 0;
+						double f = ShepardMethod(N, XData, ZData, FData, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
+						double w = (f - FunMin) / (FunMax - FunMin) * 255;
+						rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
 				}
 				else if (SliceVector == Vector3D(0, 0, 1))
 				{
@@ -197,8 +198,14 @@ void GUIMyFrame1::DrawSlice()
 
 }
 
-double GUIMyFrame1::ShepardMethod(double x, double y, double z)
+double GUIMyFrame1::ShepardMethod(int n, std::vector <double>& XData, std::vector <double> &YData, std::vector <double>& FData, double x, double y, double z)
 {
-	//...
-	return 1.0;
+	double a = 0;
+	double b = 0;
+	for (int k = 0; k < n; k++) {
+		float wag = 1.0 / fabs(pow(x - XData[k],2) + pow(y - YData[k], 2));
+		a += FData[k] * wag;
+		b += wag;
+	}
+	return a / b;
 }

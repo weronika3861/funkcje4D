@@ -13,10 +13,10 @@ def fun2(x, y, z):
 
 
 # can be altered:
-lim_down = -2.0
-lim_up = 2.0
+lim_down = -0.5
+lim_up = 0.5
 step = 1
-fun = fun2
+fun = fun1
 
 
 gen_range = arange(lim_down, lim_up + step, step)

@@ -17,7 +17,7 @@ GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
 	IsFileLoaded = false;
 	SliceImage.Create(m_panel->GetSize());
 	SliceImage.Clear(255);
-	srand(time(NULL));
+	//srand(time(NULL));
 }
 
 void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)

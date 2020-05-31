@@ -118,6 +118,8 @@ MyFrame1::MyFrame1( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_w6->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( MyFrame1::m_w6OnButtonClick ), NULL, this );
 }
 
+
+
 MyFrame1::~MyFrame1()
 {
 	// Disconnect Events

@@ -6,6 +6,8 @@
 #include <iterator>
 #include <memory>
 #include <wx/log.h> 
+#include <cstdlib>
+#include <ctime>
 
 
 GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
@@ -15,6 +17,7 @@ GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
 	IsFileLoaded = false;
 	SliceImage.Create(m_panel->GetSize());
 	SliceImage.Clear(255);
+	//srand(time(NULL));
 }
 
 void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
@@ -74,7 +77,6 @@ void GUIMyFrame1::m_slider2OnScroll(wxScrollEvent& event)
 
 void GUIMyFrame1::m_panelOnUpdateUI(wxUpdateUIEvent& event)
 {
-	DrawSlice();
 	Repaint();
 }
 
@@ -93,6 +95,9 @@ void GUIMyFrame1::m_w1OnButtonClick(wxCommandEvent& event)
 void GUIMyFrame1::m_w2OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(0, 1, 0);
+	XAxisArg = &XData;
+	YAxisArg = &ZData;
+	ZAxisArg = &YData;
 	DrawSlice();
 	Repaint();
 }
@@ -100,6 +105,9 @@ void GUIMyFrame1::m_w2OnButtonClick(wxCommandEvent& event)
 void GUIMyFrame1::m_w3OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(0, 0, 1);
+	XAxisArg = &XData;
+	YAxisArg = &YData;
+	ZAxisArg = &ZData;
 	DrawSlice();
 	Repaint();
 }
@@ -128,17 +136,21 @@ void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::Repaint()
 {
+	int min_size = std::min(m_panel->GetSize().GetWidth(), m_panel->GetSize().GetHeight());
+	wxSize panel_square_size(min_size, min_size);
+	if (SliceImage.GetSize() != panel_square_size)
+		DrawSlice();
+	wxBitmap bitmap(SliceImage);
 	wxClientDC dc_(m_panel);
 	wxBufferedDC dc(&dc_);
 	dc.SetBackground(*wxWHITE_BRUSH);
 	dc.Clear();
-	wxBitmap bitmap(SliceImage);
 	dc.DrawBitmap(bitmap, 0, 0); //rysowanie na ekranie aktualnego przekroju
 }
 
 void GUIMyFrame1::DrawSlice()
 {
-	if (IsFileLoaded)
+	if (IsFileLoaded && XAxisArg && YAxisArg && ZAxisArg)
 	{
 		double arg_min = XData[0];
 		double z_axis_val = arg_min + SliceNumber / 100 * PointRange; //konwersja numeru przekroju (na sliderze) na wartoœæ któregoœ z argumentów
@@ -162,48 +174,21 @@ void GUIMyFrame1::DrawSlice()
 
 				int N = XData.size();
 
-				//do mapy kolorow
-				//int w = static_cast<int>((f - FunMin) / (FunMax - FunMin)) * 255;
-				//rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
-
-				//to jest tylko testowe
-				if (SliceVector == Vector3D(1, 0, 0))
-				{
-						double f = ShepardMethod(N, YData, ZData,FData, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
-						double w = (f - FunMin) / (FunMax - FunMin) * 255;
-						rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
-				}
-				else if (SliceVector == Vector3D(0, 1, 0))
-				{
-						double f = ShepardMethod(N, XData, ZData, FData, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
-						double w = (f - FunMin) / (FunMax - FunMin) * 255;
-						rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
-				}
-				else if (SliceVector == Vector3D(0, 0, 1))
-				{
-					rgb_data[r_pos] = 0;
-					rgb_data[g_pos] = 0;
-					rgb_data[b_pos] = 255;
-				}
-				else
-				{
-					rgb_data[r_pos] = 255;
-					rgb_data[g_pos] = 255;
-					rgb_data[b_pos] = 255;
-				}
+				double f = ShepardMethod(N, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
+				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin) * 255);
+				//int w = rand() % 256;
+				rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
 			}
 		SliceImage = wxImage(coord_range, coord_range, rgb_data); //zapisuje obecny przekrój do SliceImage
-
 	}
-
 }
 
-double GUIMyFrame1::ShepardMethod(int n, std::vector <double>& XData, std::vector <double> &YData, std::vector <double>& FData, double x, double y, double z)
+double GUIMyFrame1::ShepardMethod(int n, double x, double y, double z)
 {
 	double a = 0;
 	double b = 0;
 	for (int k = 0; k < n; k++) {
-		float wag = 1.0 / fabs(pow(x - XData[k],2) + pow(y - YData[k], 2));
+		float wag = 1.0 / fabs(pow(x - (*XAxisArg)[k],2) + pow(y - (*YAxisArg)[k], 2));
 		a += FData[k] * wag;
 		b += wag;
 	}

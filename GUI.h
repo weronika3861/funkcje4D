@@ -59,9 +59,17 @@ protected:
 	virtual void m_w6OnButtonClick(wxCommandEvent& event) { event.Skip(); }
 
 
+<<<<<<< HEAD
 
 public:
 	wxSlider* m_slider2;
+=======
+
+	public:
+		wxSlider* m_slider2;
+
+		MyFrame1( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Funkcje 4D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 740, 550 ), long style = wxDEFAULT_FRAME_STYLE |wxTAB_TRAVERSAL);
+>>>>>>> 47d20bea25556520cc5bd8546f149e2d8b08cc10
 
 	MyFrame1(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Funkcje 4D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(740, 550), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 

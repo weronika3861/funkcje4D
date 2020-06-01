@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from numpy import arange
 
 
@@ -15,9 +13,9 @@ def fun2(x, y, z):
 
 
 # can be altered:
-lim_down = -5.0
-lim_up = 5.0
-step = 0.5
+lim_down = -0.5
+lim_up = 0.5
+step = 1
 fun = fun1
 
 

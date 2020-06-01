@@ -43,9 +43,7 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 				YData.push_back(y);
 				ZData.push_back(z);
 				FData.push_back(f);
-
 			}
-			
 
 			in.close();
 			double arg_min = XData[0];
@@ -58,7 +56,6 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 			XAxisArg = &YData;
 			YAxisArg = &ZData;
 			ZAxisArg = &XData;
-			Farg = &FData;
 			
 			IsFileLoaded = true;
 			DrawSlice();
@@ -100,7 +97,6 @@ void GUIMyFrame1::m_w1OnButtonClick(wxCommandEvent& event)
 	XAxisArg = &YData;
 	YAxisArg = &ZData;
 	ZAxisArg = &XData;
-	Farg = &FData;
 
 	DrawSlice();
 	Repaint();
@@ -112,7 +108,6 @@ void GUIMyFrame1::m_w2OnButtonClick(wxCommandEvent& event)
 	XAxisArg = &XData;
 	YAxisArg = &ZData;
 	ZAxisArg = &YData;
-	Farg = &FData;
 	DrawSlice();
 	Repaint();
 }
@@ -123,7 +118,6 @@ void GUIMyFrame1::m_w3OnButtonClick(wxCommandEvent& event)
 	XAxisArg = &XData;
 	YAxisArg = &YData;
 	ZAxisArg = &ZData;
-	Farg = &FData; 
 	DrawSlice();
 	Repaint();
 }
@@ -151,8 +145,6 @@ void GUIMyFrame1::m_w4OnButtonClick(wxCommandEvent& event)
 	XAxisArg = &Xnew;
 	YAxisArg = &Ynew;
 	ZAxisArg = &Znew;
-	Farg = &FData;
-
 	DrawSlice();
 	Repaint();
 }
@@ -180,8 +172,6 @@ void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 	XAxisArg = &Xnew;
 	YAxisArg = &Ynew;
 	ZAxisArg = &Znew;
-	Farg = &FData;
-
 	DrawSlice();
 	Repaint();
 }
@@ -209,8 +199,6 @@ void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 	XAxisArg = &Xnew;
 	YAxisArg = &Ynew;
 	ZAxisArg = &Znew;
-	Farg = &FData;
-
 	DrawSlice();
 	Repaint();
 }
@@ -235,7 +223,7 @@ void GUIMyFrame1::DrawSlice()
 	if (IsFileLoaded && XAxisArg && YAxisArg && ZAxisArg)
 	{
 		double arg_min = XData[0];
-		double z_axis_val = arg_min + SliceNumber / 100 * PointRange; //konwersja numeru przekroju (na sliderze) na wartoœæ któregoœ z argumentów
+		double z_axis_val = arg_min + (double)SliceNumber / 100 * PointRange; //konwersja numeru przekroju (na sliderze) na wartoœæ któregoœ z argumentów
 
 		int width = m_panel->GetSize().GetWidth();
 		int height = m_panel->GetSize().GetHeight();

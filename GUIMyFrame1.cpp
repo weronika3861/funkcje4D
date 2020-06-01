@@ -43,9 +43,7 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 				YData.push_back(y);
 				ZData.push_back(z);
 				FData.push_back(f);
-
 			}
-			
 
 			in.close();
 			double arg_min = XData[0];
@@ -58,7 +56,6 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 			XAxisArg = &YData;
 			YAxisArg = &ZData;
 			ZAxisArg = &XData;
-			Farg = &FData;
 			
 			IsFileLoaded = true;
 			DrawSlice();
@@ -100,7 +97,6 @@ void GUIMyFrame1::m_w1OnButtonClick(wxCommandEvent& event)
 	XAxisArg = &YData;
 	YAxisArg = &ZData;
 	ZAxisArg = &XData;
-	Farg = &FData;
 
 	DrawSlice();
 	Repaint();
@@ -128,7 +124,27 @@ void GUIMyFrame1::m_w3OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::m_w4OnButtonClick(wxCommandEvent& event)
 {
-	SliceVector = Vector3D(1, 1, 0);
+	SliceVector = Vector3D(1, 1, 0); 
+
+	/* wektor (1,1,0) jest normalny do powierzchni wyznaczonej przez wektory (0,0,1) oraz (1,-1,0) */
+
+	Xnew.clear(); 
+	Ynew.clear();
+	Znew.clear();
+
+	for (auto x : XData) {
+		for (auto y : YData) {
+			for (auto z : ZData) {
+				Xnew.push_back(x - y); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,-1,0) czyli wektor (1,-1,0)
+				Ynew.push_back(z); // oœ Y w programie: jak wektor (0,0,1)
+				Znew.push_back(x + y); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,1,0) czyli wektor (1,1,0) /*normalny*/
+			}
+		}
+	}
+
+	XAxisArg = &Xnew;
+	YAxisArg = &Ynew;
+	ZAxisArg = &Znew;
 	DrawSlice();
 	Repaint();
 }
@@ -136,6 +152,26 @@ void GUIMyFrame1::m_w4OnButtonClick(wxCommandEvent& event)
 void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(1, 0, 1);
+
+	/* wektor (1,0,1) jest normalny do powierzchni wyznaczonej przez wektory (0,1,0) oraz (1,0,-1) */
+
+	Xnew.clear();
+	Ynew.clear();
+	Znew.clear();
+
+	for (auto x : XData) {
+		for (auto y : YData) {
+			for (auto z : ZData) {
+				Xnew.push_back(x - z); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,0,1) czyli wektor (1,0,1)
+				Ynew.push_back(y); // oœ Y w programie: jak wektor (0,1,0)
+				Znew.push_back(x + z); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,0,-1) czyli wektor (1,0,-1) /*normalny*/
+			}
+		}
+	}
+
+	XAxisArg = &Xnew;
+	YAxisArg = &Ynew;
+	ZAxisArg = &Znew;
 	DrawSlice();
 	Repaint();
 }
@@ -143,6 +179,26 @@ void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 {
 	SliceVector = Vector3D(0, 1, 1);
+
+	/* wektor (0,1,1) jest normalny do powierzchni wyznaczonej przez wektory (1,0,0) oraz (0,1,-1) */
+
+	Xnew.clear();
+	Ynew.clear();
+	Znew.clear();
+
+	for (auto x : XData) {
+		for (auto y : YData) {
+			for (auto z : ZData) {
+				Xnew.push_back(y - z); // oœ X w programie: znormalizowana suma wektorowa (0,1,0) i (0,0,-1) czyli wektor (0,1,-1)
+				Ynew.push_back(x); // oœ Y w programie: jak wektor (1,0,0)
+				Znew.push_back(y + z); // oœ Z w programie: znormalizowana suma wektorowa (0,1,0) i (0,0,1) czyli wektor (0,1,1) /*normalny*/
+			}
+		}
+	}
+
+	XAxisArg = &Xnew;
+	YAxisArg = &Ynew;
+	ZAxisArg = &Znew;
 	DrawSlice();
 	Repaint();
 }
@@ -167,7 +223,7 @@ void GUIMyFrame1::DrawSlice()
 	if (IsFileLoaded && XAxisArg && YAxisArg && ZAxisArg)
 	{
 		double arg_min = XData[0];
-		double z_axis_val = arg_min + SliceNumber / 100 * PointRange; //konwersja numeru przekroju (na sliderze) na wartoœæ któregoœ z argumentów
+		double z_axis_val = arg_min + (double)SliceNumber / 100 * PointRange; //konwersja numeru przekroju (na sliderze) na wartoœæ któregoœ z argumentów
 
 		int width = m_panel->GetSize().GetWidth();
 		int height = m_panel->GetSize().GetHeight();
@@ -203,7 +259,7 @@ double GUIMyFrame1::ShepardMethod(int n, double x, double y, double z)
 	double a = 0;
 	double b = 0;
 	for (int k = 0; k < n; k++) {
-		double wag = 1.0 / fabs(pow(x - (*XAxisArg)[k],2) + pow(y - (*YAxisArg)[k], 2)); 
+		double wag = 1.0 / fabs(pow(x - (*XAxisArg)[k],2) + pow(y - (*YAxisArg)[k], 2) + pow(z - (*ZAxisArg)[k], 2));
 		a += FData[k] * wag; 
 		b += wag;
 	}

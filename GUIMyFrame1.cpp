@@ -8,6 +8,7 @@
 #include <wx/log.h> 
 #include <cstdlib>
 #include <ctime>
+#include <wx\wx.h>
 
 
 GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
@@ -42,7 +43,10 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 				YData.push_back(y);
 				ZData.push_back(z);
 				FData.push_back(f);
+
 			}
+			
+
 			in.close();
 			double arg_min = XData[0];
 			double arg_max = XData[XData.size() - 1];
@@ -50,10 +54,20 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 
 			FunMin = *std::min_element(std::begin(FData), std::end(FData));
 			FunMax = *std::max_element(std::begin(FData), std::end(FData));
-
+			
+			XAxisArg = &YData;
+			YAxisArg = &ZData;
+			ZAxisArg = &XData;
+			Farg = &FData;
+			
 			IsFileLoaded = true;
 			DrawSlice();
 			Repaint();
+		}
+		else {
+			wxMessageDialog *dial2 = new wxMessageDialog(NULL, wxT("Error loading file"), wxT("Error"), wxOK | wxICON_ERROR);
+			dial2->ShowModal();
+			delete dial2;
 		}
 	}
 }
@@ -173,7 +187,7 @@ void GUIMyFrame1::DrawSlice()
 				double y_axis_val = arg_min + j / (double)coord_range * PointRange;
 
 				int N = XData.size();
-
+				
 				double f = ShepardMethod(N, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
 				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin) * 255);
 				//int w = rand() % 256;
@@ -185,11 +199,12 @@ void GUIMyFrame1::DrawSlice()
 
 double GUIMyFrame1::ShepardMethod(int n, double x, double y, double z)
 {
+
 	double a = 0;
 	double b = 0;
 	for (int k = 0; k < n; k++) {
-		float wag = 1.0 / fabs(pow(x - (*XAxisArg)[k],2) + pow(y - (*YAxisArg)[k], 2));
-		a += FData[k] * wag;
+		double wag = 1.0 / fabs(pow(x - (*XAxisArg)[k],2) + pow(y - (*YAxisArg)[k], 2)); 
+		a += FData[k] * wag; 
 		b += wag;
 	}
 	return a / b;

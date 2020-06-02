@@ -93,7 +93,6 @@ void GUIMyFrame1::m_panelOnUpdateUI(wxUpdateUIEvent& event)
 
 void GUIMyFrame1::m_w1OnButtonClick(wxCommandEvent& event)
 {
-	SliceVector = Vector3D(1, 0, 0);
 	XAxisArg = &YData;
 	YAxisArg = &ZData;
 	ZAxisArg = &XData;
@@ -104,7 +103,6 @@ void GUIMyFrame1::m_w1OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::m_w2OnButtonClick(wxCommandEvent& event)
 {
-	SliceVector = Vector3D(0, 1, 0);
 	XAxisArg = &XData;
 	YAxisArg = &ZData;
 	ZAxisArg = &YData;
@@ -114,7 +112,6 @@ void GUIMyFrame1::m_w2OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::m_w3OnButtonClick(wxCommandEvent& event)
 {
-	SliceVector = Vector3D(0, 0, 1);
 	XAxisArg = &XData;
 	YAxisArg = &YData;
 	ZAxisArg = &ZData;
@@ -124,8 +121,6 @@ void GUIMyFrame1::m_w3OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::m_w4OnButtonClick(wxCommandEvent& event)
 {
-	SliceVector = Vector3D(1, 1, 0); 
-
 	/* wektor (1,1,0) jest normalny do powierzchni wyznaczonej przez wektory (0,0,1) oraz (1,-1,0) */
 
 	Xnew.clear(); 
@@ -151,8 +146,6 @@ void GUIMyFrame1::m_w4OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 {
-	SliceVector = Vector3D(1, 0, 1);
-
 	/* wektor (1,0,1) jest normalny do powierzchni wyznaczonej przez wektory (0,1,0) oraz (1,0,-1) */
 
 	Xnew.clear();
@@ -178,8 +171,6 @@ void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 
 void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 {
-	SliceVector = Vector3D(0, 1, 1);
-
 	/* wektor (0,1,1) jest normalny do powierzchni wyznaczonej przez wektory (1,0,0) oraz (0,1,-1) */
 
 	Xnew.clear();
@@ -262,7 +253,7 @@ double GUIMyFrame1::ShepardMethod(int n, double x, double y, double z)
 		if ((*XAxisArg)[k] == x && (*YAxisArg)[k] == y && (*ZAxisArg)[k] == z)
 			return FData[k];
 		double wag = 1.0 / fabs(pow(x - (*XAxisArg)[k],2) + pow(y - (*YAxisArg)[k], 2) + pow(z - (*ZAxisArg)[k], 2));
-		a += FData[k] * wag; 
+		a += FData[k] * wag;  
 		b += wag;
 	}
 	return a / b;

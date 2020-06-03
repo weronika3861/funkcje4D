@@ -246,7 +246,6 @@ void GUIMyFrame1::DrawSlice()
 
 double GUIMyFrame1::ShepardMethod(int n, double x, double y, double z)
 {
-
 	double a = 0;
 	double b = 0;
 	for (int k = 0; k < n; k++) {

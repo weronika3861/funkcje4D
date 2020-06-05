@@ -30,6 +30,8 @@ protected:
 	void m_saveOnButtonClick(wxCommandEvent& event);
 	void m_slider2OnScroll(wxScrollEvent& event);
 	void m_panelOnUpdateUI(wxUpdateUIEvent& event);
+	void m_GrayOnButtonClick(wxCommandEvent& event);
+	void m_ColorOnButtonClick(wxCommandEvent& event);
 	void m_w1OnButtonClick(wxCommandEvent& event);
 	void m_w2OnButtonClick(wxCommandEvent& event);
 	void m_w3OnButtonClick(wxCommandEvent& event);
@@ -53,6 +55,7 @@ public:
 	int SliceNumber; //liczba na slajderze, czyli aktualny numer przekroju (mo¿e byæ 100 przekrojów)
 	wxImage SliceImage; //obraz aktualnego przekroju
 	bool IsFileLoaded;
+	bool IsColor;
 };
 
 #endif // __GUIMyFrame1__

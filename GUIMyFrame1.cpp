@@ -58,6 +58,7 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 			ZAxisArg = &XData;
 			
 			IsFileLoaded = true;
+			IsColor = true;
 			DrawSlice();
 			Repaint();
 		}
@@ -155,9 +156,9 @@ void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 	for (auto x : XData) {
 		for (auto y : YData) {
 			for (auto z : ZData) {
-				Xnew.push_back(x - z); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,0,1) czyli wektor (1,0,1)
+				Xnew.push_back(x - z); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,0,-1) czyli wektor (1,0,-1)
 				Ynew.push_back(y); // oœ Y w programie: jak wektor (0,1,0)
-				Znew.push_back(x + z); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,0,-1) czyli wektor (1,0,-1) /*normalny*/
+				Znew.push_back(x + z); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,0,1) czyli wektor (1,0,1) /*normalny*/
 			}
 		}
 	}
@@ -190,6 +191,22 @@ void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 	XAxisArg = &Xnew;
 	YAxisArg = &Ynew;
 	ZAxisArg = &Znew;
+	DrawSlice();
+	Repaint();
+}
+
+
+void GUIMyFrame1::m_ColorOnButtonClick(wxCommandEvent& event) 
+{
+	IsColor = true;
+	DrawSlice();
+	Repaint();
+}
+
+
+void GUIMyFrame1::m_GrayOnButtonClick(wxCommandEvent& event)
+{
+	IsColor = false;
 	DrawSlice();
 	Repaint();
 }
@@ -238,7 +255,17 @@ void GUIMyFrame1::DrawSlice()
 				double f = ShepardMethod(N, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
 				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin) * 255);
 				//int w = rand() % 256;
-				rgb_data[r_pos] = rgb_data[g_pos] = rgb_data[b_pos] = w;
+
+				if (IsColor) { //czerwono-niebieski
+					rgb_data[r_pos] = w;
+					rgb_data[g_pos] = 0;
+					rgb_data[b_pos] = 1 - w;
+				}
+				else { //odcienie szaroœci
+					rgb_data[r_pos] = w;
+					rgb_data[g_pos] = w;
+					rgb_data[b_pos] = w;
+				}
 			}
 		SliceImage = wxImage(coord_range, coord_range, rgb_data); //zapisuje obecny przekrój do SliceImage
 	}

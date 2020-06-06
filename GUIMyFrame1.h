@@ -48,7 +48,7 @@ public:
 
 	std::vector<double> XData, YData, ZData, FData; //wektory przechowujace wartosci x, y, z, f (z pliku)
 	std::vector <double>* XAxisArg, *YAxisArg, *ZAxisArg;
-	std::vector <double> Xnew, Ynew, Znew; //wektory pomocnicze przy przyciskach 4,5,6
+	std::vector <std::array<double, 3>> AxisArgs;
 	double FunMax, FunMin; //max i min aktualnej fukcji 4D (czyli wektora FData)
 	double PointRange; //zakres argumentow x, y, z (max - min)
 	int SliceNumber; //liczba na slajderze, czyli aktualny numer przekroju (mo¿e byæ 100 przekrojów)

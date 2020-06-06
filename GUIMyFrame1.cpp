@@ -58,7 +58,7 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 			ZAxisArg = &XData;
 			
 			IsFileLoaded = true;
-			IsColor = true;
+			IsColor = false;
 			DrawSlice();
 			Repaint();
 		}
@@ -123,23 +123,15 @@ void GUIMyFrame1::m_w3OnButtonClick(wxCommandEvent& event)
 void GUIMyFrame1::m_w4OnButtonClick(wxCommandEvent& event)
 {
 	/* wektor (1,1,0) jest normalny do powierzchni wyznaczonej przez wektory (0,0,1) oraz (1,-1,0) */
-
-	Xnew.clear(); 
-	Ynew.clear();
-	Znew.clear();
-
-	for (auto x : XData) {
-		for (auto y : YData) {
-			for (auto z : ZData) {
-				Xnew.push_back(x - y); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,-1,0) czyli wektor (1,-1,0)
-				Ynew.push_back(z); // oœ Y w programie: jak wektor (0,0,1)
-				Znew.push_back(x + y); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,1,0) czyli wektor (1,1,0) /*normalny*/
-			}
-		}
+	std::vector<double> Xnew;
+	std::vector<double> Znew;
+	for (int i = 0; i < XData.size(); i++) {
+		Xnew.push_back(XData[i] - YData[i]); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,-1,0) czyli wektor (1,-1,0)
+		Znew.push_back(XData[i] + YData[i]); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,1,0) czyli wektor (1,1,0) /*normalny*/
 	}
 
 	XAxisArg = &Xnew;
-	YAxisArg = &Ynew;
+	YAxisArg = &ZData;
 	ZAxisArg = &Znew;
 	DrawSlice();
 	Repaint();
@@ -149,22 +141,15 @@ void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 {
 	/* wektor (1,0,1) jest normalny do powierzchni wyznaczonej przez wektory (0,1,0) oraz (1,0,-1) */
 
-	Xnew.clear();
-	Ynew.clear();
-	Znew.clear();
-
-	for (auto x : XData) {
-		for (auto y : YData) {
-			for (auto z : ZData) {
-				Xnew.push_back(x - z); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,0,-1) czyli wektor (1,0,-1)
-				Ynew.push_back(y); // oœ Y w programie: jak wektor (0,1,0)
-				Znew.push_back(x + z); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,0,1) czyli wektor (1,0,1) /*normalny*/
-			}
-		}
+	std::vector<double> Xnew;
+	std::vector<double> Znew;
+	for (int i = 0; i < XData.size(); i++) {
+		Xnew.push_back(XData[i] - ZData[i]); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,-1,0) czyli wektor (1,-1,0)
+		Znew.push_back(XData[i] + ZData[i]); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,1,0) czyli wektor (1,1,0) /*normalny*/
 	}
 
 	XAxisArg = &Xnew;
-	YAxisArg = &Ynew;
+	YAxisArg = &YData;
 	ZAxisArg = &Znew;
 	DrawSlice();
 	Repaint();
@@ -174,22 +159,15 @@ void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 {
 	/* wektor (0,1,1) jest normalny do powierzchni wyznaczonej przez wektory (1,0,0) oraz (0,1,-1) */
 
-	Xnew.clear();
-	Ynew.clear();
-	Znew.clear();
-
-	for (auto x : XData) {
-		for (auto y : YData) {
-			for (auto z : ZData) {
-				Xnew.push_back(y - z); // oœ X w programie: znormalizowana suma wektorowa (0,1,0) i (0,0,-1) czyli wektor (0,1,-1)
-				Ynew.push_back(x); // oœ Y w programie: jak wektor (1,0,0)
-				Znew.push_back(y + z); // oœ Z w programie: znormalizowana suma wektorowa (0,1,0) i (0,0,1) czyli wektor (0,1,1) /*normalny*/
-			}
-		}
+	std::vector<double> Xnew;
+	std::vector<double> Znew;
+	for (int i = 0; i < XData.size(); i++) {
+		Xnew.push_back(YData[i] - ZData[i]); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,-1,0) czyli wektor (1,-1,0)
+		Znew.push_back(YData[i] + ZData[i]); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,1,0) czyli wektor (1,1,0) /*normalny*/
 	}
 
 	XAxisArg = &Xnew;
-	YAxisArg = &Ynew;
+	YAxisArg = &XData;
 	ZAxisArg = &Znew;
 	DrawSlice();
 	Repaint();
@@ -273,7 +251,6 @@ void GUIMyFrame1::DrawSlice()
 
 double GUIMyFrame1::ShepardMethod(int n, double x, double y, double z)
 {
-
 	double a = 0;
 	double b = 0;
 	for (int k = 0; k < n; k++) {

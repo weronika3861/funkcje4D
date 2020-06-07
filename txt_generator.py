@@ -13,8 +13,8 @@ def fun2(x, y, z):
 
 
 # can be altered:
-lim_down = -4.0
-lim_up = 4.0
+lim_down = -2.0
+lim_up = 2.0
 step = 1.0
 fun = fun1
 

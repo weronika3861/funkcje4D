@@ -53,12 +53,13 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 			FunMin = *std::min_element(std::begin(FData), std::end(FData));
 			FunMax = *std::max_element(std::begin(FData), std::end(FData));
 			
-			XAxisArg = &YData;
+			/* domyœlne wartoœci */
+			XAxisArg = &YData; 
 			YAxisArg = &ZData;
 			ZAxisArg = &XData;
+			IsColor = true;
 			
 			IsFileLoaded = true;
-			IsColor = true;
 			DrawSlice();
 			Repaint();
 		}

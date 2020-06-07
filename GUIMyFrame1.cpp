@@ -232,9 +232,9 @@ void GUIMyFrame1::DrawSlice()
 				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin) * 255);
 
 				if (IsColor) { //czerwono-niebieski
-					rgb_data[r_pos] = 255 - w;
+					rgb_data[r_pos] = w;
 					rgb_data[g_pos] = 0;
-					rgb_data[b_pos] = w;
+					rgb_data[b_pos] = 255 - w;
 				}
 				else { //odcienie szaroœci
 					rgb_data[r_pos] = w;

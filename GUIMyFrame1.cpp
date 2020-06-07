@@ -1,6 +1,5 @@
 #include "GUIMyFrame1.h"
 #include <fstream>
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
 #include <iterator>
@@ -13,7 +12,13 @@ GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
 	:
 	MyFrame1(parent)
 {
+	XAxisArg = &YData;
+	YAxisArg = &ZData;
+	ZAxisArg = &XData;
+
 	IsFileLoaded = false;
+	IsColor = false;
+
 	SliceImage.Create(m_panel->GetSize());
 	SliceImage.Clear(255);
 }
@@ -50,12 +55,8 @@ void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
 			FunMin = *std::min_element(std::begin(FData), std::end(FData));
 			FunMax = *std::max_element(std::begin(FData), std::end(FData));
 			
-			XAxisArg = &YData;
-			YAxisArg = &ZData;
-			ZAxisArg = &XData;
-			
 			IsFileLoaded = true;
-			IsColor = false;
+
 			DrawSlice();
 			Repaint();
 		}
@@ -203,7 +204,7 @@ void GUIMyFrame1::Repaint()
 
 void GUIMyFrame1::DrawSlice()
 {
-	if (IsFileLoaded && XAxisArg && YAxisArg && ZAxisArg)
+	if (IsFileLoaded)
 	{
 		double arg_min = XData[0];
 		double z_axis_val = arg_min + (double)SliceNumber / 100 * PointRange; //konwersja numeru przekroju (na sliderze) na wartoœæ któregoœ z argumentów

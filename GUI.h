@@ -65,7 +65,7 @@ protected:
 public:
 	wxSlider* m_slider2;
 
-	MyFrame1(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Funkcje 4D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(827, 579), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+	MyFrame1(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Funkcje 4D"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(790, 600), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 
 	~MyFrame1();
 

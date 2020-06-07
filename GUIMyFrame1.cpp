@@ -121,8 +121,8 @@ void GUIMyFrame1::m_w3OnButtonClick(wxCommandEvent& event)
 void GUIMyFrame1::m_w4OnButtonClick(wxCommandEvent& event)
 {
 	/* wektor (1,1,0) jest normalny do powierzchni wyznaczonej przez wektory (0,0,1) oraz (1,-1,0) */
-	std::vector<double> Xnew;
-	std::vector<double> Znew;
+	Xnew.clear();
+	Znew.clear();
 	for (int i = 0; i < XData.size(); i++) {
 		Xnew.push_back(XData[i] - YData[i]); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,-1,0) czyli wektor (1,-1,0)
 		Znew.push_back(XData[i] + YData[i]); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,1,0) czyli wektor (1,1,0) /*normalny*/
@@ -139,8 +139,8 @@ void GUIMyFrame1::m_w5OnButtonClick(wxCommandEvent& event)
 {
 	/* wektor (1,0,1) jest normalny do powierzchni wyznaczonej przez wektory (0,1,0) oraz (1,0,-1) */
 
-	std::vector<double> Xnew;
-	std::vector<double> Znew;
+	Xnew.clear();
+	Znew.clear();
 	for (int i = 0; i < XData.size(); i++) {
 		Xnew.push_back(XData[i] - ZData[i]); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,-1,0) czyli wektor (1,-1,0)
 		Znew.push_back(XData[i] + ZData[i]); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,1,0) czyli wektor (1,1,0) /*normalny*/
@@ -157,8 +157,8 @@ void GUIMyFrame1::m_w6OnButtonClick(wxCommandEvent& event)
 {
 	/* wektor (0,1,1) jest normalny do powierzchni wyznaczonej przez wektory (1,0,0) oraz (0,1,-1) */
 
-	std::vector<double> Xnew;
-	std::vector<double> Znew;
+	Xnew.clear();
+	Znew.clear();
 	for (int i = 0; i < XData.size(); i++) {
 		Xnew.push_back(YData[i] - ZData[i]); // oœ X w programie: znormalizowana suma wektorowa (1,0,0) i (0,-1,0) czyli wektor (1,-1,0)
 		Znew.push_back(YData[i] + ZData[i]); // oœ Z w programie: znormalizowana suma wektorowa (1,0,0) i (0,1,0) czyli wektor (1,1,0) /*normalny*/

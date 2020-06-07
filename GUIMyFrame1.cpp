@@ -6,8 +6,6 @@
 #include <iterator>
 #include <memory>
 #include <wx/log.h> 
-#include <cstdlib>
-#include <ctime>
 #include <wx\wx.h>
 
 
@@ -18,7 +16,6 @@ GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
 	IsFileLoaded = false;
 	SliceImage.Create(m_panel->GetSize());
 	SliceImage.Clear(255);
-	//srand(time(NULL));
 }
 
 void GUIMyFrame1::m_loadOnButtonClick(wxCommandEvent& event)
@@ -232,12 +229,11 @@ void GUIMyFrame1::DrawSlice()
 				
 				double f = ShepardMethod(N, x_axis_val, y_axis_val, z_axis_val); //aproksymujemy wartosc funkcji
 				int w = static_cast<int>((f - FunMin) / (FunMax - FunMin) * 255);
-				//int w = rand() % 256;
 
 				if (IsColor) { //czerwono-niebieski
 					rgb_data[r_pos] = w;
 					rgb_data[g_pos] = 0;
-					rgb_data[b_pos] = 1 - w;
+					rgb_data[b_pos] = 255 - w;
 				}
 				else { //odcienie szaroœci
 					rgb_data[r_pos] = w;

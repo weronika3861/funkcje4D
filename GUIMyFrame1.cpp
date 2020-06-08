@@ -18,6 +18,7 @@ GUIMyFrame1::GUIMyFrame1(wxWindow* parent)
 
 	IsFileLoaded = false;
 	IsColor = false;
+	m_slider2->SetValue(0);
 
 	SliceImage.Create(m_panel->GetSize());
 	SliceImage.Clear(255);
